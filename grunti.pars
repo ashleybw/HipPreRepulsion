@@ -1,0 +1,29 @@
+{
+  "Plot": {
+    "Title": "",
+    "Type": "XY",
+    "Lines": true,
+    "Points": false,
+    "LineWidth": 1,
+    "PointSize": 3,
+    "BarWidth": 0.8,
+    "NegXDraw": false,
+    "Scale": 4,
+    "XAxisCol": "Epoch",
+    "XAxisLabel": "",
+    "YAxisLabel": "",
+    "XAxisRot": 0,
+    "LegendCol": ""
+  },
+  "DefRange": {
+    "Min": 0,
+    "Max": 1,
+    "FixMin": false,
+    "FixMax": false
+  },
+  "UpdtTotalSec": 15,
+  "UpdtIntervalSec": 5,
+  "SubmitArgs": "",
+  "SubmitMsg": "test",
+  "OpenResultsCont": "epc"
+}
