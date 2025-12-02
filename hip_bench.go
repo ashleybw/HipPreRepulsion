@@ -101,11 +101,6 @@ type PatParams struct {
 	DriftPct       float32 `desc:"percentage of active bits that drift, per step, for drifting context"`
 }
 
-// TEParams = testing effect params
-// type TEParams struct {
-// 	IsRP bool `desc:"whether RP or RS"`
-// }
-
 // Reps contains standard analysis of representations
 type Reps struct {
 	SimMat    *simat.SimMat `view:"no-inline" desc:"similarity matrix"`
@@ -253,13 +248,6 @@ func (ss *Sim) New() {
 	ss.Tables = map[string]*etable.Table{}
 	ss.TrainRoute = &etable.Table{}
 	ss.TestRoute = &etable.Table{}
-	// ss.OverlapTrain = &etable.Table{}
-	// ss.OverlapPFCTrain = &etable.Table{}
-	// ss.NonOverlapTrain = &etable.Table{}
-	// ss.TrainAC = &etable.Table{}
-	// ss.OverlapTest = &etable.Table{}
-	// ss.OverlapPFCTest = &etable.Table{}
-	// ss.NonOverlapTest = &etable.Table{}
 	ss.TestAC = &etable.Table{}
 	ss.TestLure = &etable.Table{}
 	ss.TrainAll = &etable.Table{}
@@ -272,8 +260,6 @@ func (ss *Sim) New() {
 	ss.RunStats = &etable.Table{}
 	ss.SimMats = make(map[string]*simat.SimMat)
 	ss.Params = ParamSets // in def_params -- current best params
-	// ss.Params = OrigParamSets // original, previous model
-	// ss.Params = SavedParamsSets // current user-saved gui params
 	ss.RndSeed = 2
 	ss.ViewOn = true
 	ss.TrainUpdt = leabra.AlphaCycle
@@ -295,16 +281,6 @@ func (ss *Sim) New() {
 
 	ss.Defaults()
 }
-
-//use when you want to switch between RP and RS between runs
-// func (te *TEParams) Defaults() {
-// 	te.IsRP = true
-// }
-
-//use when you want to switch between RP and RS between runs
-// func (te *TEParams) Defaults() {
-// 	te.IsRP = true
-// }
 
 func (pp *PatParams) Defaults() {
 	pp.ListSize = 20 // 10 is too small to see issues..
@@ -750,40 +726,6 @@ func (ss *Sim) TrainTrial() {
 			ss.TestAll()
 		}
 		learned := (ss.NZeroStop > 0 && ss.NZero >= ss.NZeroStop)
-
-		// switch epc {
-		// case 0, 2, 4, 6, 8, 10, 12:
-		// 	dg.Inhib.Layer.Gi = 3.2
-		// 	ss.TrainEnv.Table = etable.NewIdxView(ss.OverlapTrain)
-		// 	// set names after updating epochs to get correct names for the next env
-		// 	ss.TrainEnv.SetTrialName()
-		// 	ss.TrainEnv.SetGroupName()
-		// 	learned = false
-		// case 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27:
-		// 	dg.Inhib.Layer.Gi = 3.2
-		// 	ss.TrainEnv.Table = etable.NewIdxView(ss.NonOverlapTrain)
-		// 	// set names after updating epochs to get correct names for the next env
-		// 	ss.TrainEnv.SetTrialName()
-		// 	ss.TrainEnv.SetGroupName()
-		// 	learned = false
-		// case 14, 16, 18, 20, 22, 24, 26, 28:
-		// 	dg.Inhib.Layer.Gi = 3.8
-		// 	ss.TrainEnv.Table = etable.NewIdxView(ss.OverlapPFCTrain)
-		// 	// set names after updating epochs to get correct names for the next env
-		// 	ss.TrainEnv.SetTrialName()
-		// 	ss.TrainEnv.SetGroupName()
-		// 	learned = false
-		// }
-
-		// if ss.TrainEnv.Table.Table == ss.TrainStrong && (learned || epc == ss.MaxEpcs/2) { // switch to weak
-		// 	ss.TrainEnv.Table = etable.NewIdxView(ss.TrainWeak)
-
-		// 	// set names after updating epochs to get correct names for the next env
-		// 	ss.TrainEnv.SetTrialName()
-		// 	ss.TrainEnv.SetGroupName()
-
-		// 	learned = false
-		// }
 		if learned || epc >= ss.MaxEpcs { // done with training..
 			ss.RunEnd()
 			if ss.TrainEnv.Run.Incr() { // we are done!
@@ -1240,49 +1182,6 @@ func (ss *Sim) Train() {
 	ss.Stopped()
 }
 
-// func (ss *Sim) TrainOverlap() {
-// 	ss.TrainEnv.Table = etable.NewIdxView(ss.OverlapTrain)
-// 	ss.TrainEnv.Init(ss.TrainEnv.Run.Cur)
-// 	ss.TrainEnv.Trial.Cur = -1
-// 	ss.StopNow = false
-// 	for {
-// 		ss.FirstTrainTrial()
-// 		if ss.StopNow {
-// 			break
-// 		}
-// 	}
-// 	ss.Stopped()
-
-// }
-
-// func (ss *Sim) TrainNonOverlap() {
-// 	ss.TrainEnv.Table = etable.NewIdxView(ss.NonOverlapTrain)
-// 	ss.TrainEnv.Init(ss.TrainEnv.Run.Cur)
-// 	ss.TrainEnv.Trial.Cur = -1
-// 	ss.StopNow = false
-// 	for {
-// 		ss.SecondTrainTrial()
-// 		if ss.StopNow {
-// 			break
-// 		}
-// 	}
-// 	ss.Stopped()
-// }
-
-// func (ss *Sim) TrainOverlapPFC() {
-// 	ss.TrainEnv.Table = etable.NewIdxView(ss.OverlapPFCTrain)
-// 	ss.TrainEnv.Init(ss.TrainEnv.Run.Cur)
-// 	ss.TrainEnv.Trial.Cur = -1
-// 	ss.StopNow = false
-// 	for {
-// 		ss.RetrievalPracticeTrial()
-// 		if ss.StopNow {
-// 			break
-// 		}
-// 	}
-// 	ss.Stopped()
-// }
-
 // Stop tells the sim to stop running
 func (ss *Sim) Stop() {
 	ss.StopNow = true
@@ -1528,17 +1427,6 @@ func (ss *Sim) ConfigPats() {
 		}
 	}
 
-	// how the study works (Hulbert & Norman, 2015):
-	// 1. learning of the animals with the names once (with math distractor task between each trial)
-	// 2. half animals RP (with feedback) and half RS (immediately followed by test trial)
-	// 3. learning again for one round (with math distractor task between each trial)
-	// 4. final recall (all test)
-	// 5. computed a neural learning score: difference in similarity between non-RP items before and after RP minus similarity
-	// 		between RP items before and after RP
-	// orig task stimuli: 6 groups of 8 similar items - need to implement
-	ecY := hp.ECSize.Y
-	ecX := hp.ECSize.X
-
 	// pools - high overlap pools (1bit flipped) for minus, nbitflip for plus
 
 	for i := 0; i < 2; i++ {
@@ -1555,50 +1443,24 @@ func (ss *Sim) ConfigPats() {
 	patgen.MixPats(ss.TestRoute, ss.PoolVocab, "Input", []string{"overlap1", "overlap2", "distinct1", "distinct2", "empty", "empty"})
 	patgen.MixPats(ss.TestRoute, ss.PoolVocab, "ECout", []string{"overlap1", "overlap2", "distinct1", "distinct2", "destination1", "destination2"})
 
-	// patgen.InitPats(ss.OverlapTrain, "Overlapping Routes Train", "Overlapping Pats", "Input", "ECout", npats, ecY, ecX, plY, plX)
-	// patgen.MixPats(ss.OverlapTrain, ss.PoolVocab, "Input", []string{"overlap1", "overlap2", "distinct1", "distinct2", "destination", "destination"})
-	// patgen.MixPats(ss.OverlapTrain, ss.PoolVocab, "ECout", []string{"overlap1", "overlap2", "distinct1", "distinct2", "destination", "destination"})
-
-	// patgen.InitPats(ss.OverlapTest, "Overlapping Routes Test", "Overlapping Pats", "Input", "ECout", npats, ecY, ecX, plY, plX)
-	// patgen.MixPats(ss.OverlapTest, ss.PoolVocab, "Input", []string{"overlap1", "overlap2", "distinct1", "distinct2", "empty", "empty"})
-	// patgen.MixPats(ss.OverlapTest, ss.PoolVocab, "ECout", []string{"overlap1", "overlap2", "distinct1", "distinct2", "destination", "destination"})
-
-	// patgen.InitPats(ss.NonOverlapTrain, "NonOverlapping Routes Train", "NonOverlapping Pats", "Input", "ECout", npats, ecY, ecX, plY, plX)
-	// patgen.MixPats(ss.NonOverlapTrain, ss.PoolVocab, "Input", []string{"distinct", "distinct", "distinct", "distinct", "destination", "destination"})
-	// patgen.MixPats(ss.NonOverlapTrain, ss.PoolVocab, "ECout", []string{"distinct", "distinct", "distinct", "distinct", "destination", "destination"})
-
-	// patgen.InitPats(ss.NonOverlapTest, "NonOverlapping Routes Test", "NonOverlapping Pats", "Input", "ECout", npats, ecY, ecX, plY, plX)
-	// patgen.MixPats(ss.NonOverlapTest, ss.PoolVocab, "Input", []string{"overlap1", "overlap2", "distinct", "distinct", "empty", "empty"})
-	// patgen.MixPats(ss.NonOverlapTest, ss.PoolVocab, "ECout", []string{"overlap1", "overlap2", "distinct", "distinct", "destination", "destination"})
-
-	// patgen.InitPats(ss.OverlapPFCTrain, "Overlapping Routes with PFC Train", "Overlapping Routes with PFC Pats", "Input", "ECout", npats, ecY, ecX, plY, plX)
-	// patgen.MixPats(ss.OverlapPFCTrain, ss.PoolVocab, "Input", []string{"overlap1", "overlap2", "distinct", "distinct", "destination", "destination"})
-	// patgen.MixPats(ss.OverlapPFCTrain, ss.PoolVocab, "ECout", []string{"overlap1", "overlap2", "distinct", "distinct", "destination", "destination"})
-
-	// patgen.InitPats(ss.OverlapPFCTest, "Overlapping Routes with PFC Test", "Overlapping Routes with PFC Pats", "Input", "ECout", npats, ecY, ecX, plY, plX)
-	// patgen.MixPats(ss.OverlapPFCTest, ss.PoolVocab, "Input", []string{"overlap1", "overlap2", "distinct", "distinct", "empty", "empty"})
-	// patgen.MixPats(ss.OverlapPFCTest, ss.PoolVocab, "ECout", []string{"overlap1", "overlap2", "distinct", "distinct", "destination", "destination"})
-
 	ss.TrainAll = ss.TrainRoute.Clone()
-	// ss.TrainAll.AppendRows(ss.NonOverlapTrain)
-	// ss.TrainAll.AppendRows(ss.OverlapPFCTrain)
 
 	pfctrain := etensor.NewFloat32([]int{ss.TrainRoute.Rows, ecY, ecX, 1, 1}, nil, nil)
 	ss.TrainRoute.AddCol(pfctrain, "PFC")
 	for i := 0; i < ss.TrainRoute.Rows; i++ {
-		// pfctrain.Set([]int{i, 0, 0, 0, 0}, 1)
-		// pfctrain.Set([]int{i, 0, 1, 0, 0}, 1)
-		pfctrain.Set([]int{i, 1, 0, 0, 0}, 1) //distinct pools inhibited
-		pfctrain.Set([]int{i, 1, 1, 0, 0}, 1)
+		pfctrain.Set([]int{i, 0, 0, 0, 0}, 1) //overlapping pools inhibited
+		pfctrain.Set([]int{i, 0, 1, 0, 0}, 1)
+		//pfctrain.Set([]int{i, 1, 0, 0, 0}, 1) //distinct pools inhibited
+		//pfctrain.Set([]int{i, 1, 1, 0, 0}, 1)
 	}
 
 	pfctest := etensor.NewFloat32([]int{ss.TestRoute.Rows, ecY, ecX, 1, 1}, nil, nil)
 	ss.TestRoute.AddCol(pfctest, "PFC")
 	for i := 0; i < ss.TestRoute.Rows; i++ {
-		// pfctest.Set([]int{i, 0, 0, 0, 0}, 1)
-		// pfctest.Set([]int{i, 0, 1, 0, 0}, 1)
-		pfctest.Set([]int{i, 1, 0, 0, 0}, 1) //distinct pools inhibited
-		pfctest.Set([]int{i, 1, 1, 0, 0}, 1)
+		pfctest.Set([]int{i, 0, 0, 0, 0}, 1) //overlapping pools inhibited
+		pfctest.Set([]int{i, 0, 1, 0, 0}, 1)
+		//pfctest.Set([]int{i, 1, 0, 0, 0}, 1) //distinct pools inhibited
+		//pfctest.Set([]int{i, 1, 1, 0, 0}, 1)
 	}
 
 }
