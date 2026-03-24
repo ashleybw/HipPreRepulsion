@@ -1405,6 +1405,8 @@ func (ss *Sim) ConfigPats() {
 	hp := &ss.Hip
 	plY := hp.ECPool.Y // good idea to get shorter vars when used frequently
 	plX := hp.ECPool.X // makes much more readable
+	ecX := hp.ECSize.X
+	ecY := hp.ECSize.Y
 	npats := 4
 	pctAct := hp.ECPctAct
 	minDiff := ss.Pat.MinDiffPct
