@@ -287,7 +287,7 @@ func (pp *PatParams) Defaults() {
 	pp.MinDiffPct = 0.6
 	pp.CtxtFlipPct = .1
 	pp.OverlapFlipPct = .2
-	pp.NoisePct = .6
+	pp.NoisePct = .65
 }
 
 func (hp *HipParams) Defaults() {
@@ -2755,8 +2755,8 @@ func (ss *Sim) CmdArgs() {
 	}
 	fmt.Printf("Running %d Runs\n", ss.MaxRuns)
 	ss.Train()
-	ss.TwoFactorRun()
-	ss.TwoFactorRun()
+	// ss.TwoFactorRun()
+	// ss.TwoFactorRun()
 	fnm := ss.LogFileName("runs")
 	ss.RunStats.SaveCSV(gi.FileName(fnm), etable.Tab, etable.Headers)
 }
