@@ -98,7 +98,7 @@ type PatParams struct {
 	DriftCtxt      bool    `desc:"use drifting context representations -- otherwise does bit flips from prototype"`
 	CtxtFlipPct    float32 `desc:"proportion (0-1) of active bits to flip for each context pattern, relative to a prototype, for non-drifting"`
 	OverlapFlipPct float32 `desc:"proportion (0-1) of active bits to flip for each context pattern, relative to a prototype, for non-drifting"`
-	DriftPct       float32 `desc:"percentage of active bits that drift, per step, for drifting context"`
+	NoisePct       float32 `desc:"percentage of active bits that drift, per step, for drifting context"`
 }
 
 // Reps contains standard analysis of representations
@@ -287,7 +287,7 @@ func (pp *PatParams) Defaults() {
 	pp.MinDiffPct = 0.6
 	pp.CtxtFlipPct = .1
 	pp.OverlapFlipPct = .2
-	pp.DriftPct = .2
+	pp.NoisePct = .6
 }
 
 func (hp *HipParams) Defaults() {
@@ -1412,6 +1412,9 @@ func (ss *Sim) ConfigPats() {
 	minDiff := ss.Pat.MinDiffPct
 	nOn := patgen.NFmPct(pctAct, plY*plX)
 	overlapflip := patgen.NFmPct(ss.Pat.OverlapFlipPct, nOn)
+	noiseFlip := patgen.NFmPct(ss.Pat.NoisePct, nOn)
+	fmt.Println("noiseFlip:", noiseFlip)
+
 	patgen.AddVocabEmpty(ss.PoolVocab, "empty", npats, plY, plX)
 	patgen.AddVocabPermutedBinary(ss.PoolVocab, "overlap1_tmp", npats/2, plY, plX, pctAct, minDiff)
 	patgen.AddVocabPermutedBinary(ss.PoolVocab, "overlap2_tmp", npats/2, plY, plX, pctAct, minDiff)
@@ -1437,12 +1440,22 @@ func (ss *Sim) ConfigPats() {
 		patgen.FlipBitsRows(tsr, overlapflip, overlapflip, 1, 0)
 	}
 
+	// add noise to testing guys
+	mktest := func(nm string) {
+		tsr, _ := patgen.AddVocabClone(ss.PoolVocab, nm+"tst", nm)
+		patgen.FlipBitsRows(tsr, noiseFlip, noiseFlip, 1, 0)
+	}
+	mktest("overlap1")
+	mktest("overlap2")
+	mktest("distinct1")
+	mktest("distinct2")
+
 	patgen.InitPats(ss.TrainRoute, "Routes Train", "Routes Pats", "Input", "ECout", npats, ecY, ecX, plY, plX)
 	patgen.MixPats(ss.TrainRoute, ss.PoolVocab, "Input", []string{"overlap1", "overlap2", "distinct1", "distinct2", "destination1", "destination2"})
 	patgen.MixPats(ss.TrainRoute, ss.PoolVocab, "ECout", []string{"overlap1", "overlap2", "distinct1", "distinct2", "destination1", "destination2"})
 
 	patgen.InitPats(ss.TestRoute, "Routes Test", "Routes Pats", "Input", "ECout", npats, ecY, ecX, plY, plX)
-	patgen.MixPats(ss.TestRoute, ss.PoolVocab, "Input", []string{"overlap1", "overlap2", "distinct1", "distinct2", "empty", "empty"})
+	patgen.MixPats(ss.TestRoute, ss.PoolVocab, "Input", []string{"overlap1tst", "overlap2tst", "distinct1tst", "distinct2tst", "empty", "empty"})
 	patgen.MixPats(ss.TestRoute, ss.PoolVocab, "ECout", []string{"overlap1", "overlap2", "distinct1", "distinct2", "destination1", "destination2"})
 
 	ss.TrainAll = ss.TrainRoute.Clone()
@@ -2684,7 +2697,6 @@ func (ss *Sim) CmdArgs() {
 	flag.StringVar(&ss.Tag, "tag", "", "extra tag to add to file names saved from this run")
 	flag.StringVar(&note, "note", "", "user note -- describe the run params etc")
 	flag.IntVar(&ss.MaxRuns, "runs", 25, "number of runs to do")
-	flag.IntVar(&ss.MaxEpcs, "epcs", 28, "maximum number of epochs to run (split between AB / AC)")
 	flag.IntVar(&ss.MaxEpcs, "epcs", 28, "maximum number of epochs to run (split between AB / AC)")
 	flag.BoolVar(&ss.LogSetParams, "setparams", false, "if true, print a record of each parameter that is set")
 	flag.BoolVar(&ss.SaveWts, "wts", false, "if true, save final weights after each run")
