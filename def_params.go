@@ -19,7 +19,7 @@ var ParamSets = params.Sets{
 				}},
 			{Sel: ".EcCa1Prjn", Desc: "encoder projections -- no norm, moment",
 				Params: params.Params{
-					"Prjn.Learn.Lrate":       "0.04",
+					"Prjn.Learn.Lrate":       "0.02", // "0.04",
 					"Prjn.Learn.Momentum.On": "false",
 					"Prjn.Learn.Norm.On":     "false",
 					"Prjn.Learn.WtBal.On":    "true", // counteracting hogging
@@ -29,14 +29,14 @@ var ParamSets = params.Sets{
 			{Sel: ".HippoCHL", Desc: "hippo CHL projections -- no norm, moment, but YES wtbal = sig better",
 				Params: params.Params{
 					"Prjn.CHL.Hebb":          "0.01", // .01 > .05? > .1?
-					"Prjn.Learn.Lrate":       "0.2",  // .2 probably better? .4 was prev default, this val is not used anywhere
+					"Prjn.Learn.Lrate":       "0.1",  // "0.2",  // .2 probably better? .4 was prev default, this val is not used anywhere
 					"Prjn.Learn.Momentum.On": "false",
 					"Prjn.Learn.Norm.On":     "false",
 					"Prjn.Learn.WtBal.On":    "true",
 				}},
 			{Sel: ".PPath", Desc: "perforant path, new Dg error-driven EcCa1Prjn prjns",
 				Params: params.Params{
-					"Prjn.Learn.Lrate":       "0.15", // err driven: .15 > .2 > .25 > .1
+					"Prjn.Learn.Lrate":       "0.05", // "0.15", // err driven: .15 > .2 > .25 > .1
 					"Prjn.Learn.Momentum.On": "false",
 					"Prjn.Learn.Norm.On":     "false",
 					"Prjn.Learn.WtBal.On":    "true",
@@ -78,7 +78,7 @@ var ParamSets = params.Sets{
 					"Prjn.CHL.Hebb":          "0.2",  // .2 seems good
 					"Prjn.CHL.SAvgCor":       "0.1",  // 0.01 = 0.05 = .1 > .2 > .3 > .4 (listlize 20-100)
 					"Prjn.CHL.MinusQ1":       "true", // dg self err slightly better
-					"Prjn.Learn.Lrate":       "0.05", // .05 > .1 > .2 > .4; .01 less interference more learning time - key tradeoff param, .05 best for list20-100
+					"Prjn.Learn.Lrate":       "0.02", //"0.05", // .05 > .1 > .2 > .4; .01 less interference more learning time - key tradeoff param, .05 best for list20-100
 					"Prjn.Learn.Momentum.On": "false",
 					"Prjn.Learn.Norm.On":     "false",
 					"Prjn.Learn.WtBal.On":    "true",
@@ -87,7 +87,7 @@ var ParamSets = params.Sets{
 				Params: params.Params{
 					"Prjn.CHL.Hebb":          "0.01", // .01 > .005 > .02 > .002 > .001 > .05 (crazy)
 					"Prjn.CHL.SAvgCor":       "0.4",
-					"Prjn.Learn.Lrate":       "0.1", // CHL: .1 =~ .08 > .15 > .2, .05 (sig worse)
+					"Prjn.Learn.Lrate":       "0.05", // "0.1", // CHL: .1 =~ .08 > .15 > .2, .05 (sig worse)
 					"Prjn.Learn.Momentum.On": "false",
 					"Prjn.Learn.Norm.On":     "false",
 					"Prjn.Learn.WtBal.On":    "true",

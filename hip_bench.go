@@ -287,7 +287,7 @@ func (pp *PatParams) Defaults() {
 	pp.MinDiffPct = 0.6
 	pp.CtxtFlipPct = .1
 	pp.OverlapFlipPct = .2
-	pp.NoisePct = .65
+	pp.NoisePct = .4
 }
 
 func (hp *HipParams) Defaults() {
@@ -342,8 +342,8 @@ func (ss *Sim) ConfigEnv() {
 		ss.MaxRuns = 20
 	}
 	if ss.MaxEpcs == 0 { // allow user override
-		ss.MaxEpcs = 28
-		ss.MaxEpcs = 28
+		ss.MaxEpcs = 14
+		ss.MaxEpcs = 14
 		ss.NZeroStop = -1
 		ss.PreTrainEpcs = 5 // seems sufficient?
 	}
@@ -623,7 +623,7 @@ func (ss *Sim) AlphaCyc(train bool) {
 				ecinFmPfc := ecin.SendName("PFC").(leabra.LeabraPrjn).AsLeabra()
 				ca1 := ss.Net.LayerByName("CA1").(leabra.LeabraLayer).AsLeabra()
 				ca1FmPfc := ca1.SendName("PFC").(leabra.LeabraPrjn).AsLeabra()
-				if epc < 14 {
+				if epc < ss.MaxEpcs/2 {
 					dg.Inhib.Layer.Gi = 3.2
 					ecinFmPfc.WtScale.Abs = 0
 					ca1FmPfc.WtScale.Abs = 0
@@ -2697,7 +2697,7 @@ func (ss *Sim) CmdArgs() {
 	flag.StringVar(&ss.Tag, "tag", "", "extra tag to add to file names saved from this run")
 	flag.StringVar(&note, "note", "", "user note -- describe the run params etc")
 	flag.IntVar(&ss.MaxRuns, "runs", 25, "number of runs to do")
-	flag.IntVar(&ss.MaxEpcs, "epcs", 28, "maximum number of epochs to run (split between AB / AC)")
+	flag.IntVar(&ss.MaxEpcs, "epcs", 14, "maximum number of epochs to run (split between AB / AC)")
 	flag.BoolVar(&ss.LogSetParams, "setparams", false, "if true, print a record of each parameter that is set")
 	flag.BoolVar(&ss.SaveWts, "wts", false, "if true, save final weights after each run")
 	flag.BoolVar(&saveEpcLog, "epclog", true, "if true, save test epoch log to file")
